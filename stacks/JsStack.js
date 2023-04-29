@@ -9,7 +9,7 @@ export default class JsStack extends sst.Stack {
     // Create a HTTP API
     const api = new sst.Api(this, "Api", {
       routes: {
-        "GET /js": "src/welcome/lambda.handler",
+        "GET /js": "src/js/welcome/lambda.handler",
       },
     });
 
