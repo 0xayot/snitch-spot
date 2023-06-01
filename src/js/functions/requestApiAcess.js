@@ -1,23 +1,20 @@
 import ApiAccessRequestModel from "../models/apiAccessRequestModel";
 import db from "../utils/dbconnector";
+import { success, verboseResponse } from "../utils/responsUtils";
 import { retrieveUserRecordByEvent } from "../utils/userUtils";
 
 export async function handler(event) {
-  await db.connect();
-  const user = retrieveUserRecordByEvent(event);
+  try {
+    await db.connect();
+    const user = retrieveUserRecordByEvent(event);
 
-  if (user.apiEnabled)
-    return {
-      statusCode: 200,
-      headers: { "Content-Type": "text/plain" },
-      body: { message: "success" },
-    };
+    if (user.apiEnabled)
+      return success({ message: "You currently have api access " });
 
-  await ApiAccessRequestModel.create({ userId: user.id });
+    await ApiAccessRequestModel.create({ userId: user.id });
 
-  return {
-    statusCode: 200,
-    headers: { "Content-Type": "text/plain" },
-    body: { message: "success" },
-  };
+    return success({ message: "We have received your request" });
+  } catch (error) {
+    return verboseResponse({ status: false, message: error.message });
+  }
 }
