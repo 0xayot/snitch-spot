@@ -7,6 +7,11 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    cognitoId: {
+      type: String,
+      required: true,
+      index: true,
+    },
     apiEnabled: {
       type: Boolean,
       required: true,
