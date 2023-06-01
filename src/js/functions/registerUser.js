@@ -1,5 +1,6 @@
 import UserModel from "../models/userModel";
 import db from "../utils/dbconnector";
+import { retrieveUserId } from "../utils/userUtils";
 
 export async function handler(event) {
   await db.connect();
@@ -10,6 +11,7 @@ export async function handler(event) {
     email: body.email,
     organisation: body.organisation,
     name: body.name,
+    cognitoId: retrieveUserId(),
   };
 
   const savedUser = UserModel.create(userData);
