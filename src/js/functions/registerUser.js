@@ -14,6 +14,8 @@ export async function handler(event) {
 
   const savedUser = UserModel.create(userData);
 
+  // request api access
+
   return {
     statusCode: 200,
     headers: { "Content-Type": "text/plain" },
