@@ -1,6 +1,6 @@
 import ApiAccessRequestModel from "../models/apiAccessRequestModel";
 import db from "../utils/dbconnector";
-import { success, verboseResponse } from "../utils/responsUtils";
+import { success, verboseResponse } from "../utils/responseUtils";
 import { retrieveUserRecordByEvent } from "../utils/userUtils";
 
 export async function handler(event) {

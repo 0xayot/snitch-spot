@@ -1,6 +1,6 @@
 import UserModel from "../models/userModel";
 import db from "../utils/dbconnector";
-import { success, verboseResponse } from "../utils/responsUtils";
+import { success, verboseResponse } from "../utils/responseUtils";
 import { retrieveUserId } from "../utils/userUtils";
 
 export async function handler(event) {

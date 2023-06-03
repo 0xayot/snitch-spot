@@ -4,8 +4,8 @@ export function success(body) {
   return buildResponse(200, { status: "success", ...body });
 }
 
-export function failure(body) {
-  return buildResponse(500, body);
+export function failure(body, status = 500) {
+  return buildResponse(status, body);
 }
 
 export function verboseResponse(body, status = 500) {
