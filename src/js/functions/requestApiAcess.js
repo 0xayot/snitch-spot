@@ -6,7 +6,7 @@ import { retrieveUserRecordByEvent } from "../utils/userUtils";
 export async function handler(event) {
   try {
     await db.connect();
-    const user = retrieveUserRecordByEvent(event);
+    const user = await retrieveUserRecordByEvent(event);
 
     if (user.apiEnabled)
       return success({ message: "You currently have api access " });
