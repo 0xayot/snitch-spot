@@ -6,21 +6,21 @@ import { retrieveUserId } from "../utils/userUtils";
 export async function handler(event) {
   try {
     await db.connect();
-    const body = event.body;
+    const body = JSON.parse(event.body);
 
     // Sanitize body
     const userData = {
       email: body.email,
       organisation: body.organisation,
       name: body.name,
-      cognitoId: retrieveUserId(),
+      cognitoId: retrieveUserId(event),
     };
 
     const savedUser = await UserModel.create(userData);
 
     // request api access
 
-    return success(savedUser);
+    return success(savedUser.toJSON());
   } catch (error) {
     return verboseResponse({ status: false, message: error.message }, 404);
   }
