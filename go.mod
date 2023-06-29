@@ -9,4 +9,5 @@ require (
 	github.com/aws/constructs-go/constructs/v10 v10.1.298
 	github.com/aws/constructs-go/constructs/v3 v3.4.290
 	github.com/aws/jsii-runtime-go v1.79.0
+	go.mongodb.org/mongo-driver v1.12.0 // indirect
 )
