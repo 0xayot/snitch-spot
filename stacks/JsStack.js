@@ -5,11 +5,15 @@ export default class JsStack extends sst.Stack {
     super(scope, id, props);
     this.setDefaultFunctionProps({
       runtime: "nodejs14.x",
+      environment: {
+        MONGODB_URI: process.env.MONGODB_URI,
+      },
     });
     // Create a HTTP API
     const api = new sst.Api(this, "Api", {
       routes: {
         "GET /js": "src/js/welcome/lambda.handler",
+        "POST /js/signup": "src/js/functions/registerUser.handler",
       },
     });
 
