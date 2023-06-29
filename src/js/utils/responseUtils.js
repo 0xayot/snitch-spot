@@ -1,7 +1,7 @@
 import db from "./dbconnector";
 
 export function success(body) {
-  return buildResponse(200, { status: "success", ...body });
+  return buildResponse(200, { status: "success", data: body });
 }
 
 export function failure(body, status = 500) {
