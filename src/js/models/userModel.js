@@ -24,6 +24,7 @@ const userSchema = new Schema(
     encryptedApiKey: {
       type: String,
       required: true,
+      index: true,
     },
   },
   { timestamps: true }
