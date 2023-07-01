@@ -20,6 +20,7 @@ export async function handler(event) {
       throw new Error("You are not api Enabled");
     }
   } catch (error) {
-    return failure(error.message);
+    console.log("RetrieveAPIKeyError", error);
+    return failure({ message: error.message }, 400);
   }
 }

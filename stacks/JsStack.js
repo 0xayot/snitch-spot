@@ -16,6 +16,7 @@ export default class JsStack extends sst.Stack {
         "POST /js/signup": "src/js/functions/registerUser.handler",
         "GET /js/request-key": "src/js/functions/requestApiAcess.handler",
         "POST /js/permit": "src/js/functions/grantApiAccess.handler",
+        "GET /js/retrieve": "src/js/functions/retrieveApiKey.handler",
       },
     });
 
