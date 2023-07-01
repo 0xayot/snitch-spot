@@ -21,5 +21,5 @@ const apiAccessRequestSchema = new Schema(
   { timestamps: true }
 );
 
-const ApiAccessRequestModel = model("AppAccessRequest", apiAccessRequestSchema);
+const ApiAccessRequestModel = model("ApiAccessRequest", apiAccessRequestSchema);
 export default ApiAccessRequestModel;

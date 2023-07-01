@@ -11,6 +11,14 @@ export async function handler(event) {
     if (user.apiEnabled)
       return success({ message: "You currently have api access " });
 
+    const pendingRequests = await ApiAccessRequestModel.findOne({
+      userId: user._id,
+      granted: false,
+    });
+
+    if (pendingRequests)
+      return success({ message: "You currently have pending requests" });
+
     await ApiAccessRequestModel.create({ userId: user.id });
 
     return success({ message: "We have received your request" });

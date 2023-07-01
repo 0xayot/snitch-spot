@@ -1,5 +1,4 @@
 import ApiAccessRequestModel from "../models/apiAccessRequestModel";
-import UserModel from "../models/userModel";
 import db from "../utils/dbconnector";
 import { failure, success, verboseResponse } from "../utils/responseUtils";
 import { sendEmailNotification } from "../utils/utils";
@@ -14,6 +13,9 @@ export async function handler(event) {
     const apiAccessRequest = await ApiAccessRequestModel.findById(
       body.id
     ).populate("userId");
+
+    console.log("pop", apiAccessRequest);
+
     if (!apiAccessRequest)
       return failure(
         {
@@ -22,13 +24,14 @@ export async function handler(event) {
         },
         400
       );
+    // if apiAccessRequest
 
-    await apiAccessRequest.update(updateData);
-    const user = await UserModel.findByIdAndUpdate(
-      apiAccessRequest.userId,
-      { apiEnabled: body.granted },
-      { new: true }
-    );
+    await apiAccessRequest.updateOne(updateData);
+    await apiAccessRequest.userId.updateOne({
+      apiEnabled: !updateData.granted,
+    });
+
+    const user = apiAccessRequest.userId;
 
     body.granted
       ? sendEmailNotification(user.email, "You can now request API Keys")

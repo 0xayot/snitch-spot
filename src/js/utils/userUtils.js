@@ -9,9 +9,15 @@ export function retrieveUserId(event, fail = true) {
 }
 
 export async function retrieveUserRecordByEvent(event, fail = true) {
-  if (process.env.IS_LOCAL) return event?.requestContext.apiId;
-  const cognitoId =
-    event?.requestContext?.authorizer?.iam?.cognitoIdentity?.identityId;
+  let cognitoId;
+  if (process.env.IS_LOCAL) {
+    cognitoId =
+      event?.requestContext?.authorizer?.iam?.cognitoIdentity?.identityId ||
+      event?.requestContext.apiId;
+  } else {
+    cognitoId =
+      event?.requestContext?.authorizer?.iam?.cognitoIdentity?.identityId;
+  }
   if (fail && !cognitoId) throw new Error("User not logged in");
   const user = await UserModel.findOne({
     cognitoId,
