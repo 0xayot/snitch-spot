@@ -1,4 +1,6 @@
 import ApiAccessRequestModel from "../models/apiAccessRequestModel";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import UserModel from "../models/userModel";
 import db from "../utils/dbconnector";
 import { failure, success, verboseResponse } from "../utils/responseUtils";
 import { sendEmailNotification } from "../utils/utils";
@@ -14,8 +16,6 @@ export async function handler(event) {
       body.id
     ).populate("userId");
 
-    console.log("pop", apiAccessRequest);
-
     if (!apiAccessRequest)
       return failure(
         {
@@ -24,12 +24,14 @@ export async function handler(event) {
         },
         400
       );
-    // if apiAccessRequest
 
     await apiAccessRequest.updateOne(updateData);
-    await apiAccessRequest.userId.updateOne({
-      apiEnabled: !updateData.granted,
-    });
+    await apiAccessRequest.userId.updateOne(
+      {
+        apiEnabled: updateData.granted,
+      },
+      { upsert: true }
+    );
 
     const user = apiAccessRequest.userId;
 
@@ -39,6 +41,7 @@ export async function handler(event) {
 
     return success({ message: "successful" });
   } catch (error) {
+    console.log("GrantApiAccessError", error);
     return verboseResponse({ status: false, message: error.message });
   }
 }
