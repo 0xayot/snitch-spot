@@ -4,7 +4,7 @@ export default class JsStack extends sst.Stack {
   constructor(scope, id, props) {
     super(scope, id, props);
     this.setDefaultFunctionProps({
-      runtime: "nodejs14.x",
+      runtime: "nodejs16.x",
       environment: {
         MONGODB_URI: process.env.MONGODB_URI,
       },

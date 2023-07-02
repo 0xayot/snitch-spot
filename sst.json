@@ -1,5 +1,6 @@
 {
   "name": "my-go-app",
   "region": "us-east-1",
+  "runtime": "nodejs16.x",
   "main": "stacks/index.js"
 }
