@@ -24,7 +24,7 @@ type User struct {
 	CognitoID       string             `bson:"cognitoId" validate:"required"`
 	APIEnabled      bool               `bson:"apiEnabled" default:"false"`
 	Name            string             `bson:"name" validate:"required"`
-	EncryptedAPIKey string             `bson:"encryptedApiKey" validate:"required"`
+	EncryptedAPIKey string             `bson:"encryptedApiKey,omitempty" json:"-"`
 	CreatedAt       time.Time          `bson:"createdAt"`
 	UpdatedAt       time.Time          `bson:"updatedAt"`
 }
