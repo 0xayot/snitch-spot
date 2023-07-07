@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 )
 
-func hashString(input string) string {
+func HashString(input string) string {
 	inputBytes := []byte(input)
 
 	// Create a new SHA256 hash object
