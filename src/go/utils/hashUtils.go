@@ -6,6 +6,11 @@ import (
 )
 
 func HashString(input string) string {
+	// Check if the input string is empty or null
+	if input == "" {
+		return "" // Return an empty string
+	}
+
 	inputBytes := []byte(input)
 
 	// Create a new SHA256 hash object
