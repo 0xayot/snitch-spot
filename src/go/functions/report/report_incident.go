@@ -76,7 +76,7 @@ func Handler(request events.APIGatewayV2HTTPRequest) (events.APIGatewayProxyResp
 		Message string                 `json:"message"`
 		Data    map[string]interface{} `json:"data,omitempty"`
 	}{
-		Message: " Succcess Snitching",
+		Message: "Succcess Snitching",
 	}
 
 	// Convert the response object to JSON
