@@ -7,6 +7,7 @@ import (
 	"snitch-spot/src/go/utils"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -44,4 +45,17 @@ func SaveReport(incident FraudReport) error { // FIx line
 		return fmt.Errorf("error inserting fraud report document: %v", err)
 	}
 	return nil
+}
+
+func FindRecord(field, hashedValue string) (*FraudReport, error) {
+	dbName := os.Getenv("DB_NAME")
+	reportCollection := utils.GetCollection(dbName, "fraudreports")
+
+	var report FraudReport
+	filter := bson.M{field: hashedValue}
+	err := reportCollection.FindOne(context.TODO(), filter).Decode(&report)
+	if err != nil {
+		return nil, err
+	}
+	return &report, nil
 }
