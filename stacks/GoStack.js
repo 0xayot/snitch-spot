@@ -15,7 +15,7 @@ export default class GoStack extends sst.Stack {
     const api = new sst.Api(this, "GoApi", {
       routes: {
         "GET /go": "src/go/welcome/main.go",
-        "POST /report": "src/go/functions/report_incident.go",
+        "POST /unsafe_reports": "src/go/functions/report_incident.go",
       },
     });
 
