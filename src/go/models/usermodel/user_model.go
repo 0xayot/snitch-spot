@@ -32,18 +32,11 @@ type User struct {
 func GetUserByApiKey(key string) (*User, error) {
 	dbName := os.Getenv("DB_NAME")
 	usersCollection := utils.GetCollection(dbName, "users")
-	// Convert the input string to byte array
 	inputBytes := []byte(key)
 
-	// Create a new SHA256 hash object
 	hash := sha512.New()
-	// Write the input bytes to the hash object
 	hash.Write(inputBytes)
-
-	// Calculate the SHA256 hash
 	hashBytes := hash.Sum(nil)
-
-	// Convert the hash bytes to a hexadecimal string
 	hashString := hex.EncodeToString(hashBytes)
 
 	filter := bson.M{"encryptedApiKey": hashString}
@@ -62,5 +55,15 @@ func GetUserByApiKey(key string) (*User, error) {
 }
 
 func GetUserFromRequest(request events.APIGatewayV2HTTPRequest) (*User, error) {
-	return GetUserByApiKey(request.Headers["x-api-key"])
+	user, err := GetUserByApiKey(request.Headers["x-api-key"])
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			fmt.Println("No user found with the provided API key")
+			return nil, fmt.Errorf("unauthorized: invalid API key")
+		} else {
+			log.Println("Error retrieving user:", err)
+			return nil, fmt.Errorf("internal server error")
+		}
+	}
+	return user, nil
 }
