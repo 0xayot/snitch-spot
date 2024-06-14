@@ -2,15 +2,18 @@ package main
 
 import (
 	"encoding/json"
+	"time"
+
 	// "fmt"
 	"log"
 
-	// FraudReportModel  "snitch-spot/src/go/models/fraudreportmodel"
+	FraudReportModel "snitch-spot/src/go/models/fraudreportmodel"
 	UserModel "snitch-spot/src/go/models/usermodel"
 	"snitch-spot/src/go/utils"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func Handler(request events.APIGatewayV2HTTPRequest) (events.APIGatewayProxyResponse, error) {
@@ -23,17 +26,15 @@ func Handler(request events.APIGatewayV2HTTPRequest) (events.APIGatewayProxyResp
 
 	user, err := UserModel.GetUserFromRequest(request)
 
+	// Validate and fail if some params are not supplied
+
 	if err != nil {
 		log.Printf("Error authenticating User %v", err)
 		return events.APIGatewayProxyResponse{StatusCode: 400}, err
 	}
-	// body :=
-	// save the data into a struct
-	log.Println("the found", user)
 
-	log.Println("the found", user.CognitoID)
-
-	var body interface{} // Add the appropriate type
+	// log.Println("the found", user.CognitoID)
+	var body map[string]interface{}
 
 	err = json.Unmarshal([]byte(request.Body), &body)
 	if err != nil {
@@ -41,44 +42,45 @@ func Handler(request events.APIGatewayV2HTTPRequest) (events.APIGatewayProxyResp
 		return events.APIGatewayProxyResponse{StatusCode: 400}, err
 	}
 
-	log.Println()
-
 	// Create an interface for the data object with arbitrary key-value pairs
 
-	// var report = interface{
-	// 	ID:                    primitive.NewObjectID(),
-	// 	EncryptedEmail:        utils.hashString ,
-	// 	EncryptedName:         "John Doe",
-	// 	EncryptedGovtID:       "encrypted_govt_id",
-	// 	EncryptedRecipientEmail: "encrypted_recipient@example.com",
-	// 	BankAccountName:       "John Doe",
-	// 	BankAccountNumber:     "1234567890",
-	// 	BankName:              "Bank XYZ",
-	// 	DeviceID:              "device_id",
-	// 	Email:                 "john.doe@example.com",
-	// 	Name:                  "John Doe",
-	// 	Offence:               "Fraud",
-	// 	MetaData:              "additional metadata",
-	// 	Resolved:              "refunded",
-	// 	ShowVictim:            false,
-	// 	Amount:                1000.50,
-	// 	VictimizedOrganization: primitive.NewObjectID(),
-	// 	IncidentDate:          time.Now(),
-	// 	CreatedAt:             time.Now(),
-	// }
+	var report = FraudReportModel.FraudReport{
+		ID:                         primitive.NewObjectID(),
+		EncryptedOffenderEmail:     utils.HashString(utils.GetString(body, "email")),
+		EncryptedOffenderName:      utils.HashString(utils.GetString(body, "name")),
+		EncryptedOffenderGovtID:    utils.HashString(utils.GetString(body, "govtId")),
+		EncryptedRecipientEmail:    utils.HashString(utils.GetString(body, "recipientEmail")),
+		ReceivingBankAccountName:   utils.HashString(utils.GetString(body, "receivingBankAccountName")),
+		ReceivingBankAccountNumber: utils.HashString(utils.GetString(body, "receivingBankAccountNumber")),
+		ReceivingBankName:          utils.HashString(utils.GetString(body, "receivingBankName")),
+		DeviceID:                   utils.HashString(utils.GetString(body, "deviceId")),
+		Offence:                    utils.GetString(body, "offence"),
+		MetaData:                   utils.GetString(body, "metabody"),
+		Resolved:                   utils.GetString(body, "resolved"),
+		ShowVictim:                 false,
+		Amount:                     utils.GetFloat64(body, "amount"),
+		VictimizedOrganization:     user.ID,
+		IncidentDate:               time.Now(),
+		CreatedAt:                  time.Now(),
+	}
 
-	utils.HashString(body.email)
+	err = FraudReportModel.SaveReport(report)
+
+	if err != nil {
+		log.Printf("Error saving report : %v", err)
+		return events.APIGatewayProxyResponse{StatusCode: 500}, err
+	}
 
 	// Create a response object
-	// response := struct {
-	// 	Message string                 `json:"message"`
-	// 	Data    map[string]interface{} `json:"data,omitempty"`
-	// }{
-	// 	Message: user,
-	// }
+	response := struct {
+		Message string                 `json:"message"`
+		Data    map[string]interface{} `json:"data,omitempty"`
+	}{
+		Message: " Succcess Snitching",
+	}
 
 	// Convert the response object to JSON
-	jsonResponse, err := json.Marshal(user)
+	jsonResponse, err := json.Marshal(response)
 	if err != nil {
 		log.Printf("Error marshaling JSON response: %v", err)
 		return events.APIGatewayProxyResponse{StatusCode: 500}, err
