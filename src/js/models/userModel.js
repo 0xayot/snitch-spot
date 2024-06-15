@@ -2,9 +2,16 @@ import { Schema, model } from "mongoose";
 
 const userSchema = new Schema(
   {
+    email: { type: String, unique: true, required: true },
     organisation: {
       type: String,
       required: true,
+    },
+    cognitoId: {
+      type: String,
+      unique: true,
+      required: true,
+      index: true,
     },
     apiEnabled: {
       type: Boolean,
@@ -17,10 +24,11 @@ const userSchema = new Schema(
     },
     encryptedApiKey: {
       type: String,
-      required: true,
+      required: false,
+      index: true,
     },
   },
   { timestamps: true }
 );
-
-export default model("User", userSchema);
+const UserModel = model("User", userSchema);
+export default UserModel;

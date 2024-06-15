@@ -8,6 +8,6 @@ export default function main(app) {
   });
   // UI API
   new JsStack(app, "js-stack", {
-    runtime: "nodejs14.x",
+    runtime: "nodejs16.x",
   });
 }
